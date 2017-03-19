@@ -23,3 +23,13 @@ I'm going to code it right into the scene as described in the section Steps/4/1 
 On a side note, some cubes do overlap causing z-fighting; I could've removed those faces, but I thought it wasn't that much of a problem, since I plan to cover them anyways.
 
 Also I haven't followed the initial idea to model using a virtual grid (much like what happens in _Minecraft_ game) but I might change my mind.
+
+## 03.19
+
+- The basic temple is complete, I'm going to model the arch and lanterns, the stairs will be part of the terrain.
+
+![temple basic model](/resources/temple_basic.png)
+
+I've been polishing the code and managed to shrink it to about a half by exploiting symmetries and self-similarities of the model, whilst trying to maintain the readability, but I'm still not satisfied. In particular height positioning is dependent on the underlying layers, but is not well handled and I don't really think I could do better honestly.
+
+I'm going to model the arch without any significant reference.
