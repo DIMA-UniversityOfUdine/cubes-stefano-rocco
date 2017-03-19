@@ -98,7 +98,7 @@
 
 			// ------------------------------------------------------- temple
 
-			var temple_materials = [ // some are reused for other parts of the scene
+			var temple_materials = [ // some are reused later on
 				// first layer
 				new THREE.MeshPhongMaterial({ color: 0x543215 }),	// kobicha (brown)
 				new THREE.MeshPhongMaterial({ color: 0xf2f0e6 }),	// alabaster
@@ -166,8 +166,8 @@
 				// 3 sets of columns, in order: front, corner, side
 				yscale = y;
 
-				var columns_xshifts = [1.5, 1.5, .5];
-				var columns_numofcols = [2, 3, 11];
+				var columns_xshifts = [1.5+h/2, 1.5, .5+h/2];		// adds a bit of variation
+				var columns_numofcols = [2, 3-2*h, 11-2*h];			// between two temple layers
 				var columns_numofclones = [2, 4, 2];
 				var columns_yrots = [0, Math.PI/4, Math.PI/2];
 				var columns_materials = [4, 3, 3];
@@ -216,7 +216,7 @@
 					for (var j = 0; j < half.children.length; j++) {
 						y += (yscale + half.children[j].scale.y)/2;
 						half.children[j].rotation.y = i*Math.PI/2;
-						half.children[j].position.y = y;	// put "half" layer on top
+						half.children[j].position.y = y;			// put "half" layer on top
 						yscale = half.children[j].scale.y;
 					}
 					roof.add(half);
@@ -239,49 +239,131 @@
 			}
 
 			// rooftop
-			var rooftop = new THREE.Object3D();
-			rooftop.position.y = ytot;
-			rooftop.scale.multiplyScalar(temple_layer_scale);
+			var temple_rooftop = new THREE.Object3D();
+			temple_rooftop.scale.multiplyScalar(temple_layer_scale);
+			temple_rooftop.position.y = ytot;
 
 			box = new THREE.Mesh(geometry, temple_materials[6]);
 			box.scale.set(6, 2, 6);
 			box.position.y = box.scale.y/2;
 			var yscale = box.scale.y;
-			rooftop.add(box);
+			temple_rooftop.add(box);
 
 			box = box.clone();
 			box.scale.set(2, 2, 2);
 			box.position.y += (yscale + box.scale.y)/2;
-			rooftop.add(box);
+			temple_rooftop.add(box);
 
 			// temple base
 			var temple_base = new THREE.Mesh(geometry, temple_materials[8]);
 			temple_base.scale.set(13, 3, 13);
 			temple_base.position.y = temple_base.scale.y/2;
-			temple_body.position.y = temple_base.scale.y;
+			temple_body.position.y += temple_base.scale.y;
+			temple_rooftop.position.y += temple_base.scale.y;
 
 
 			temple = new THREE.Object3D();
 			temple.add(temple_base);
 			temple.add(temple_body);
-			temple.add(rooftop);
+			temple.add(temple_rooftop);
+
+
+			// ------------------------------------------------------- lantern
+			lantern_materials = [
+				new THREE.MeshPhongMaterial({ color: 0x101010 }),	// very dark grey
+				new THREE.MeshPhongMaterial({ color: 0xefcc00 }),	// yellow (Munsell)
+				temple_materials[3]									// persian red
+			]
+
+			var lantern = new THREE.Object3D();
+
+			var box = new THREE.Mesh(geometry, lantern_materials[0]);
+			box.scale.set(.1, 3, .1);
+			box.position.y = -box.scale.y/2;
+			lantern.add(box);
+			var y = box.position.y - box.scale.y/2;
+
+			var box = new THREE.Mesh(geometry, lantern_materials[1]);
+			box.scale.set(.5, 3, .5);
+			box.position.y = y - box.scale.y/2;;
+			lantern.add(box);
+			y = box.position.y;
+
+			box = new THREE.Mesh(geometry, lantern_materials[2]);
+			box.scale.set(1.3, 2.5, 1.3);
+			box.position.y = y;
+			lantern.add(box);
+
+			box = box.clone();
+			box.rotation.y = Math.PI/4;
+			lantern.add(box);
 
 
 			// ------------------------------------------------------- arch
+			arch_materials = [
+				temple_materials[3],								// persian red
+				temple_materials[5],								// carnelian red
+				temple_materials[6]									// midnight green
+			]
+
+
 			var arch = new THREE.Object3D();
 
-			box = new THREE.Mesh(geometry, temple_materials[5]);
-			box.scale.set(.5, 8, .5);
-			box.position.set(-3, box.scale.y/2, 10);
+			box = new THREE.Mesh(geometry, arch_materials[0]);
+			var y = 12;
+			box.scale.set(.5, y, .5);
+			box.position.set(3.5, y/2, 0);
 			arch.add(box);
 
 			box = box.clone();
 			box.position.x = -box.position.x;
 			arch.add(box);
 
+			box = new THREE.Mesh(geometry, arch_materials[1]);
+			box.scale.set(10, 1.5, 1);
+			var ylanterns = .85 * y;
+			box.position.y = ylanterns;
+			arch.add(box);
+			{														// a few more details
+				box1 = box.clone();
+				box1.scale.set(1, 2, 1);
+				box1.position.x = (box1.scale.x + box.scale.x)/2 
+				box1.position.y += (box1.scale.y - box.scale.y)/2;
+				arch.add(box1);
 
-			scene.add(temple);
-			//scene.add(arch);
+				box1 = box1.clone();
+				box1.position.x = -box1.position.x;
+				arch.add(box1);
+			}
+
+			box = box.clone();
+			box.scale.set(9, 1, 1);
+			box.position.y = y + box.scale.y/2;
+			y = box.position.y + box.scale.y/2;
+			arch.add(box);
+			{
+				box1 = new THREE.Mesh(geometry, arch_materials[1]);
+				box1.scale.set(.5, Math.abs(ylanterns-box.position.y), .5);
+				box1.position.y = box.position.y - box1.scale.y/2;
+				arch.add(box1);
+			}
+
+			box = new THREE.Mesh(geometry, arch_materials[2]);
+			box.scale.set(13, .5, 2);
+			box.position.y = y + box.scale.y/2;
+			y = box.position.y + box.scale.y/2;
+			arch.add(box);
+
+			for (var i = 0; i < 3; i++) {
+				var arch_lantern = lantern.clone();
+				var xlantern = Math.pow(-1, i)*Math.floor((i+1)/2)*2;
+				arch_lantern.scale.multiplyScalar(.5);
+				arch_lantern.position.set(xlantern, ylanterns, 0);
+				arch.add(arch_lantern);
+			}
+
+			//scene.add(temple);
+			scene.add(arch);
 
 		}
 		
