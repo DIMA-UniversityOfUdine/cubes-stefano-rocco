@@ -20,6 +20,11 @@
 		<script src="../lib/stats.min.js"></script>
 		<script src="../lib/Coordinates.js"></script>
 		<script src="../lib/OrbitControls.js"></script>
+
+		<script src="Model.js"></script>
+		<script src="AbstractAnimation.js"></script>
+		<script src="RotationAnimation.js"></script>
+		<script src="TranslationAnimation.js"></script>
 	</head>
 	<body>
 		
@@ -40,8 +45,8 @@
 			renderer.shadowMap.enabled = true;
 			document.body.appendChild( renderer.domElement );
 			
-			camera.position.set(0,20,25);
-			camera.lookAt( new THREE.Vector3(0,20,0));
+			camera.position.set(25,25,25);
+			camera.lookAt( new THREE.Vector3(0,10,0));
 			
 			/*
 			var geometry = new THREE.BoxGeometry(1,1,1);
@@ -94,281 +99,35 @@
 			
 		}
 
-		function drawScene(scene) {
-
-			// ------------------------------------------------------- temple
-
-			var temple_materials = [ // some are reused later on
-				// first layer
-				new THREE.MeshPhongMaterial({ color: 0x543215 }),	// kobicha (brown)
-				new THREE.MeshPhongMaterial({ color: 0xf2f0e6 }),	// alabaster
-				new THREE.MeshPhongMaterial({ color: 0x87663e }),	// raw umber (brown)
-
-				// other layers
-				new THREE.MeshPhongMaterial({ color: 0xd70f01 }),	// persian red
-
-				// columns
-				new THREE.MeshPhongMaterial({ color: 0x003320 }),	// dark green
-
-				// roof				
-				new THREE.MeshPhongMaterial({ color: 0xc00e0e }),	// carnelian red
-				new THREE.MeshPhongMaterial({ color: 0x00363e }),	// midnight green
-				new THREE.MeshPhongMaterial({ color: 0x01796f }),	// pine green
-
-				// base
-				new THREE.MeshPhongMaterial({ color: 0xa0a0a0 })	// grey
-			];
-
-
-			var geometry = new THREE.BoxGeometry(1, 1, 1), box;
-
-			var temple_body = new THREE.Object3D();
-			var temple_layer_scale = 1;
-			var ytot = 0;
-
-			for (var h = 0; h < 3; h++) {							// for each temple layer
-				var temple_layer = new THREE.Object3D();
-
-				var y = 0;
-
-				// base: 3 layers, one on top of the other
-				var layers_yscales = [2.5, .3, .5];
-				var layers_materials = [[0, 1, 2], [3, 3, 3], [1, 1, 1]];
-				var layers_xzscales = [2.5, 2.8, 2.8];
-
-				for (var i = 0; i < layers_yscales.length; i++) {
-					var layer = new THREE.Object3D();				// new base layer
-					var yscale = layers_yscales[i];
-					layer.position.y = y + yscale/2;				// put base layer on top
-
-					box = new THREE.Mesh(geometry);					// layers have the same x-z
-					box.scale.set(3, yscale, 3);					// proportions
-					layer.add(box);
-
-					box = box.clone();
-					box.scale.set(4, yscale, 2);
-					layer.add(box);
-
-					box = box.clone();
-					box.rotation.y = Math.PI/2;
-					layer.add(box);
-
-					for (var j = 0; j < layer.children.length; j++) {
-						var material = temple_materials[layers_materials[i][j]];
-						layer.children[j].scale.multiplyScalar(layers_xzscales[i]);
-						layer.children[j].scale.y = yscale;
-						layer.children[j].material = material;
-					}
-					temple_layer.add(layer);
-					y = layer.position.y + yscale/2;					
-				}
-				
-				// 3 sets of columns, in order: front, corner, side
-				yscale = y;
-
-				var columns_xshifts = [1.5+h/2, 1.5, .5+h/2];		// adds a bit of variation
-				var columns_numofcols = [2, 3-2*h, 11-2*h];			// between two temple layers
-				var columns_numofclones = [2, 4, 2];
-				var columns_yrots = [0, Math.PI/4, Math.PI/2];
-				var columns_materials = [4, 3, 3];
-
-				for (var i = 0; i < columns_xshifts.length; i++) {
-					for (var j = 0; j < columns_numofclones[i]; j++) {
-						var columns = new THREE.Object3D();
-						columns.position.y = yscale/2;
-						columns.rotation.y = columns_yrots[i];
-						var material = temple_materials[columns_materials[i]];
-
-						for (var k = 0; k < columns_numofcols[i]; k++) {
-							// 0, -1, 1... for odd; 1, -1... for even numbers of columns
-							var xstep = Math.ceil((k+(1-columns_numofcols[i]%2))/2);	
-							var xshift = columns_xshifts[i]*Math.pow(-1,k)*xstep;
-
-							box = new THREE.Mesh(geometry, material);
-							box.scale.set(.2, yscale, .2);
-							box.rotation.y = columns_yrots[i];
-							box.position.set(xshift, 0, 6);
-							columns.add(box);
-						}
-						columns.rotation.y += j*2*Math.PI/columns_numofclones[i];
-						temple_layer.add(columns);
-					}
-				}
-				
-				// roof: 4 layers, one on top of the other
-				var roof = new THREE.Object3D();
-				roof.position.y = y;
-				var roof_zscales = [13, 13, 18, 13];
-				var roof_materials = [5, 6, 7, 7];
-
-				for (var i = 0; i < 2; i++) {
-					var half = new THREE.Object3D();
-					
-					for (var j = 0; j < roof_zscales.length; j++) {
-						var material = temple_materials[roof_materials[j]];
-						box = new THREE.Mesh(geometry, material);
-						box.scale.set(9.5, .5, roof_zscales[j]);
-						half.add(box);
-					}
-
-					y = 0;
-					yscale = 0;
-					for (var j = 0; j < half.children.length; j++) {
-						y += (yscale + half.children[j].scale.y)/2;
-						half.children[j].rotation.y = i*Math.PI/2;
-						half.children[j].position.y = y;			// put "half" layer on top
-						yscale = half.children[j].scale.y;
-					}
-					roof.add(half);
-				}
-				box = new THREE.Mesh(geometry, temple_materials[7]);
-				box.scale.set(9.5, 1, 9.5);
-				y += (yscale + box.scale.y)/2;
-				box.position.y = y;
-				roof.add(box);
-
-				temple_layer.add(roof);
-				y += roof.position.y + box.scale.y/2;
-
-				// merge whole temple layer and put on top of the temple body
-				temple_layer.scale.multiplyScalar(temple_layer_scale);
-				temple_layer.position.y = ytot;
-				ytot += y*temple_layer_scale;
-				temple_layer_scale *= .75;
-				temple_body.add(temple_layer);
-			}
-
-			// rooftop
-			var temple_rooftop = new THREE.Object3D();
-			temple_rooftop.scale.multiplyScalar(temple_layer_scale);
-			temple_rooftop.position.y = ytot;
-
-			box = new THREE.Mesh(geometry, temple_materials[6]);
-			box.scale.set(6, 2, 6);
-			box.position.y = box.scale.y/2;
-			var yscale = box.scale.y;
-			temple_rooftop.add(box);
-
-			box = box.clone();
-			box.scale.set(2, 2, 2);
-			box.position.y += (yscale + box.scale.y)/2;
-			temple_rooftop.add(box);
-
-			// temple base
-			var temple_base = new THREE.Mesh(geometry, temple_materials[8]);
-			temple_base.scale.set(13, 3, 13);
-			temple_base.position.y = temple_base.scale.y/2;
-			temple_body.position.y += temple_base.scale.y;
-			temple_rooftop.position.y += temple_base.scale.y;
-
-
-			temple = new THREE.Object3D();
-			temple.add(temple_base);
-			temple.add(temple_body);
-			temple.add(temple_rooftop);
-
-
-			// ------------------------------------------------------- lantern
-			lantern_materials = [
-				new THREE.MeshPhongMaterial({ color: 0x101010 }),	// very dark grey
-				new THREE.MeshPhongMaterial({ color: 0xefcc00 }),	// yellow (Munsell)
-				temple_materials[3]									// persian red
-			]
-
-			var lantern = new THREE.Object3D();
-
-			var box = new THREE.Mesh(geometry, lantern_materials[0]);
-			box.scale.set(.1, 3, .1);
-			box.position.y = -box.scale.y/2;
-			lantern.add(box);
-			var y = box.position.y - box.scale.y/2;
-
-			var box = new THREE.Mesh(geometry, lantern_materials[1]);
-			box.scale.set(.5, 3, .5);
-			box.position.y = y - box.scale.y/2;;
-			lantern.add(box);
-			y = box.position.y;
-
-			box = new THREE.Mesh(geometry, lantern_materials[2]);
-			box.scale.set(1.3, 2.5, 1.3);
-			box.position.y = y;
-			lantern.add(box);
-
-			box = box.clone();
-			box.rotation.y = Math.PI/4;
-			lantern.add(box);
-
-
-			// ------------------------------------------------------- arch
-			arch_materials = [
-				temple_materials[3],								// persian red
-				temple_materials[5],								// carnelian red
-				temple_materials[6]									// midnight green
-			]
-
-
-			var arch = new THREE.Object3D();
-
-			box = new THREE.Mesh(geometry, arch_materials[0]);
-			var y = 12;
-			box.scale.set(.5, y, .5);
-			box.position.set(3.5, y/2, 0);
-			arch.add(box);
-
-			box = box.clone();
-			box.position.x = -box.position.x;
-			arch.add(box);
-
-			box = new THREE.Mesh(geometry, arch_materials[1]);
-			box.scale.set(10, 1.5, 1);
-			var ylanterns = .85 * y;
-			box.position.y = ylanterns;
-			arch.add(box);
-			{														// a few more details
-				box1 = box.clone();
-				box1.scale.set(1, 2, 1);
-				box1.position.x = (box1.scale.x + box.scale.x)/2 
-				box1.position.y += (box1.scale.y - box.scale.y)/2;
-				arch.add(box1);
-
-				box1 = box1.clone();
-				box1.position.x = -box1.position.x;
-				arch.add(box1);
-			}
-
-			box = box.clone();
-			box.scale.set(9, 1, 1);
-			box.position.y = y + box.scale.y/2;
-			y = box.position.y + box.scale.y/2;
-			arch.add(box);
-			{
-				box1 = new THREE.Mesh(geometry, arch_materials[1]);
-				box1.scale.set(.5, Math.abs(ylanterns-box.position.y), .5);
-				box1.position.y = box.position.y - box1.scale.y/2;
-				arch.add(box1);
-			}
-
-			box = new THREE.Mesh(geometry, arch_materials[2]);
-			box.scale.set(13, .5, 2);
-			box.position.y = y + box.scale.y/2;
-			y = box.position.y + box.scale.y/2;
-			arch.add(box);
-
-			for (var i = 0; i < 3; i++) {
-				var arch_lantern = lantern.clone();
-				var xlantern = Math.pow(-1, i)*Math.floor((i+1)/2)*2;
-				arch_lantern.scale.multiplyScalar(.5);
-				arch_lantern.position.set(xlantern, ylanterns, 0);
-				arch.add(arch_lantern);
-			}
-
-			//scene.add(temple);
-			scene.add(arch);
-
-		}
-		
 		function Update() {
+
 			requestAnimationFrame( Update );
+
+			function invert(init_angle) {	// this accounts for the case in which the animation2
+												// hasn't reached PI/4 (current angle) before
+												// inversion
+				var angle = animation2.getAngle();
+				animation2.setInitAngle(init_angle);
+				animation2.invert();
+				animation2.begin();
+				animation2.setAngle(angle_max-angle);
+			}
+			if (!wind) {
+				if (Math.random() > .995) {
+					time = Date.now();
+					animation.setVelocity(3);
+					invert(0);
+					wind = true;
+				}
+			} else if (Date.now()-time > 2000) {
+				animation.setVelocity(1);
+				invert(angle_max);
+				wind = false;
+			}
+			animation.perform();
+			lantern.matrix.premultiply(matrix);
+			lantern.matrixAutoUpdate = false;
+
 			controls.update();  
 			stats.update();
 			Render();
@@ -381,7 +140,44 @@
 		
 		Start();
 
-		drawScene(scene);
+		scene.add(drawTemple());
+		var arch = drawArch();
+		arch.position.z = 15;
+		arch.scale.multiplyScalar(.5);
+		scene.add(arch);
+
+		// { --------------------------------------------------------- wind test
+		var lantern = drawLantern();
+		var matrix = (new THREE.Matrix4()).makeTranslation(0, 5, 20);
+		matrix.multiply((new THREE.Matrix4()).makeScale(.5, .5, .5));
+		lantern.matrix.copy(matrix);
+		scene.add(lantern);
+
+		var animation = new RotationAnimation(lantern, function(angle, time, delta) {
+			return Math.sin(time/1000*1.5)*Math.PI/16;
+		}, new THREE.Vector3(1, 0, 0));
+		animation.begin();
+
+		var angle_max = Math.PI/4;
+		var animation2 = new RotationAnimation(lantern, function(angle, time, delta) {
+			angle += delta/(1000*1.5);
+			if (angle < angle_max) { return angle; }
+			else { return angle_max; }
+		}, new THREE.Vector3(1, 0, 0));
+		animation.chain(animation2);
+		animation2.invert();					// note that in theory invert() has the same effect
+													// of setVeclocity(-1) if the controller is
+													// properly written (negative time), NOT tested
+		animation2.begin();						// necessary for setting angle (which is
+													// reasonable), see specification
+		animation2.setAngle(angle_max);			// set (current) angle because of first inversion
+													// in Update()...
+		animation2.setInitAngle(-angle_max);	// ...and the initial angle too
+		animation2.end();						// necessary to contrast the begin() call
+
+		var wind = false;
+		var time = Date.now();
+		// } --------------------------------------------------------- wind test
 
 		Update();
 			

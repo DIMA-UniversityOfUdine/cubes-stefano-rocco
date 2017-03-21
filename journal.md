@@ -30,7 +30,7 @@ Also I haven't followed the initial idea to model using a virtual grid (much lik
 
 ![temple basic model](/resources/temple_basic.png)
 
-I've been polishing the code and managed to shrink it to about a half by exploiting symmetries of the model, whilst trying to maintain the readability, but I'm still not satisfied. In particular y-positioning depends on the underlying layers, but is not well handled and I don't think I could do better honestly.
+I've been polishing the code and managed to shrink it to about a half by exploiting symmetries of the model, whilst trying to make it more readable, but I'm still not satisfied. In particular y-positioning depends on the underlying layers, but is not well handled and I don't think I could do better honestly.
 
 I'm going to model the arch without any significant reference.
 
@@ -38,6 +38,26 @@ I'm going to model the arch without any significant reference.
 
 I think I could use the `Object3D.clone()` function to spawn more instances of the lantern, which is a composite mesh. I've encountered a few issues using that function, specifically when copying a (composite) _transformed_ object, but this shouldn't be our case.
 
-- Provided I'll have enough time I'm going to add some details to the temple. This will most probably break symmetries so I can't add them wihtout modifying the code, and if I don't they won't come along if I decided to make some changes in the main model, but I guess I have to come to a compromise and go with the second.
+- Provided I'll have enough time I'm going to add some details to the temple. This will most probably break symmetries so I shouldn't add them wihtout modifying the code, as if I don't they won't come along if I had to make some changes in the main model. Yet, I guess I have to come to a compromise and proceed regardless of the object hierarchy.
 
 Also I think I've used too few colors so far, I really need to make some changes to the materials.
+
+## 03.20
+
+- For the moment I've decided to wrap the code of each model in a function to be called when necessary, this is cleaner.
+- Polished some more the model code, added a few details; moving to the animation phase.
+
+_-_
+**Luca Bozzetto joined the team.**
+_-_
+
+## 03.21
+
+- I've been working on the animations; I've coded a little class based on the following sketchy class diagram, which should be of help in building simple animations consisting of rotations and translations (that's what we need).
+
+![animation class diagram](/resources/animation_class_diagram.png)
+
+In particular, it shall allow the semantics of the animation to be defined by the caller. In theory this should account for 1) generality and 2) much less code in the render loop.
+
+- Split `source/drawScene` and moved the model code to its own `source/Model.js` file.
+- I spent the rest of the day debugging the animation classes, which have yet to be properly tested. In particular an improper matrix initialization was one of the most insidious source of defects, much like the strange behavior of the `Object3D.clone()` function.
