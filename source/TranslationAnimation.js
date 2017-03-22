@@ -15,6 +15,7 @@ class TranslationAnimation extends AbstractAnimation {
 
 	_computeMatrix(time_from_init, time_delta) {
 
+		this.position = this.controller(this.position, time_from_init, time_delta);
 		var matrix = (new THREE.Matrix4());
 		var v = (new THREE.Vector3()).copy(this.direction).multiplyScalar(this.position);
 		matrix.makeTranslation(v.x, v.y, v.z);
