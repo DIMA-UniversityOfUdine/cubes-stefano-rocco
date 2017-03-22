@@ -61,3 +61,8 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 - Split `source/drawScene` and moved the model code to its own `source/Model.js` file.
 - I spent the rest of the day debugging the animation classes, which have yet to be properly tested. In particular an improper matrix initialization was one of the most insidious source of defects, much like the strange behavior of the `Object3D.clone()` function.
+
+## 03.22
+
+- I and Luca finished the code for the heightMap() function that builds the terrain; I kept working on the aesthetics of the terrain whilst Luca began working on the clouds and their animation.
+- I've been going through an issue–once again only made worse by absence of specification–which caused two meshes of the same material to not behave consistently when casting shadows.
