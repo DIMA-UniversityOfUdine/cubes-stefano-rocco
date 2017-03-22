@@ -19,11 +19,11 @@ class AbstractAnimation {
 		this.next = null;
 		this.matrix_init = new THREE.Matrix4();
 		this.matrix_chain = new THREE.Matrix4();
+		this.matrix_last = new THREE.Matrix4();
 		this.active = false;
 	}
 
-	/** Starts this animation by activating it and resetting time and its original state, except
-	*	for the inversion.
+	/** Starts this animation by activating it and resetting time.
 	*/
 	begin() {
 
@@ -33,9 +33,27 @@ class AbstractAnimation {
 		this.time_curr = this.time_init;
 	}
 
-	/** Resumes this animation by activating it, without resetting its state. */
-	resume() {
-		this.active = true;
+	/** Resumes this animation by activating it, without resetting its state. If recursive = true
+	*	also resumes active chain, default is true.
+	*/
+	resume(recursive = true) {
+
+		if (!this.active) {
+			this.active = true;
+			this._resume(Date.now(), recursive);
+		}
+	}
+
+	/** Protected */
+	_resume(time, recursive) {
+
+		if (this.isActive) {
+			this.time_shift -= time - this.time_curr;
+			this.time_curr = time;
+			if (recursive && this.next != null) {
+				this.next._resume(time, recursive);
+			}
+		}
 	}
 
 	/** Performs a step of this animation by calling the controller on the object, both passed as
@@ -50,21 +68,17 @@ class AbstractAnimation {
 			this.time_shift += time_delta - (time - this.time_curr);
 			var time_from_init = time - this.time_init + this.time_shift;
 			
-			var matrix = this._computeMatrix(time_from_init, time_delta);
-			matrix.multiply(this.matrix_init);
+			this.matrix_last = this._computeMatrix(time_from_init, time_delta);
+			this.matrix_last.multiply(this.matrix_init);
 
 			if (this.next != null) {
 				this.matrix_chain = this.next.perform();
-				this.object.matrix.premultiply(matrix);
-			} else {
-				this.object.matrix = matrix;
-			}
+				this.matrix_last.multiply(this.object.matrix);
+			}			
 			this.time_curr = time;
-			return this.object.matrix;
-		} else {
-			this.object.matrix.copy(this.matrix_chain);
-			return this.matrix_chain;
 		}
+		this.object.matrix.copy(this.matrix_last);
+		return this.matrix_last;
 	}
 
 	/** Protected */
