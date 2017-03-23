@@ -68,18 +68,26 @@
 
 			dirLight = new THREE.DirectionalLight(0xffffff, 1);
 			dirLight.color.setHSL(0.1, 1, 0.95);
-			dirLight.position.set(-1, 1.2, 1);
-			dirLight.position.multiplyScalar(50);
+			dirLight.position.set(-.6, .7, 1);
+			dirLight.position.multiplyScalar(75);
 			scene.add(dirLight);
 			dirLight.castShadow = true;
 			dirLight.shadow.mapSize.width = 1024;
 			dirLight.shadow.mapSize.height = 1024;
 
-			dirLight.shadow.camera.left = 50;
-			dirLight.shadow.camera.top = 50;
+			dirLight.shadow.camera.near = 3;
+			dirLight.shadow.camera.left = -20;			
+			dirLight.shadow.camera.right = 20;
+			dirLight.shadow.camera.bottom = -20;
+			dirLight.shadow.camera.top = 30;
 
-			var helper = new THREE.CameraHelper(dirLight.shadow.camera);	//
-			scene.add(helper);												//
+			var target = new THREE.Object3D();
+			target.position.set(30, 0, 0);
+			target.updateMatrixWorld();
+			dirLight.target = target;
+
+			// var helper = new THREE.CameraHelper(dirLight.shadow.camera);
+			// scene.add(helper);
 
 
 			// GROUND
@@ -90,7 +98,6 @@
 			ground.position.y = -0.5;
 			ground.rotation.x = -Math.PI/2;
 			scene.add(ground);
-			ground.receiveShadow = true;
 			
 			stats = new Stats();
 			stats.domElement.style.position = 'absolute';
@@ -102,8 +109,7 @@
 			
 			controls = new THREE.OrbitControls(camera);
 			controls.addEventListener('change', Render);
-			
-			
+						
 		}
 
 		function Update() {
@@ -156,20 +162,16 @@
 		scene.add(arch);
 
 		// { --------------------------------------------------------- terrain test
-		function applyRecursive(obj, props, val) {
+		function applyRecursive(obj, prop, val) {
 			for (var i = 0; i < obj.children.length; i++) {
-				applyRecursive(obj.children[i], props, val);
+				applyRecursive(obj.children[i], prop, val);
 			}
-			var prop = obj;
-			for (var i = 0; i < props.length-1; i++) {
-				prop = prop[props[i]];
-			}
-			prop[props[props.length-1]] = val;
+			obj[prop] = val;
 		}
 
-		var material1 = new THREE.MeshPhongMaterial({ color: 0x201010 });
-		var material2 = new THREE.MeshPhongMaterial({ color: 0x201010 });
-		var material3 = new THREE.MeshPhongMaterial({ color: 0xa0a0a0 });
+		var material1 = new THREE.MeshPhongMaterial({ color: 0x201010 });	// terrain 1
+		var material2 = new THREE.MeshPhongMaterial({ color: 0x201010 });	// terrain 2
+		var material3 = new THREE.MeshPhongMaterial({ color: 0xa0a0a0 });	// stairs
 
 		var img1 = new Image();
 		img1.src = "../textures/terrain1.png";
@@ -177,7 +179,7 @@
 			var data = getHeightData(img1, 0.1);
 			var terrain = heightMap(data, material1);
 			terrain.scale.set(2, 1, 2);
-			applyRecursive(terrain, ['receiveShadow'], true);
+			applyRecursive(terrain, 'receiveShadow', true);
 			scene.add(terrain);
 		};
 
@@ -186,10 +188,10 @@
 		img2.onload = function () {
 			var data = getHeightData(img2, 0.1);
 			var terrain = heightMap(data, material2);
+			var ypos = data.width*terrain.scale.x + 10;
 			terrain.rotation.z = -Math.PI/2;
-			var ypos = data.width*terrain.scale.x+10;
 			terrain.position.set(0, ypos, 0);
-			applyRecursive(terrain, ['castShadow'], true);
+			applyRecursive(terrain, 'castShadow', true);
 			scene.add(terrain);
 
 			temple.position.set(17, ypos-1.5, 6);
@@ -202,11 +204,12 @@
 			var stairs = heightMap(data, material3);
 			stairs.scale.z = .5;
 			stairs.position.set(-.1, -.1, -.1);
+			applyRecursive(stairs, 'receiveShadow', true);
 			scene.add(stairs);
 		};
 
-		arch.position.set(20, 1, 30);
-		applyRecursive(arch, ['castShadow'], true);
+		arch.position.set(23.4, 1, 30);
+		applyRecursive(arch, 'castShadow', true);
 		// } --------------------------------------------------------- terrain test
 
 
