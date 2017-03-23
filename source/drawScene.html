@@ -21,7 +21,7 @@
 		<script src="../lib/Coordinates.js"></script>
 		<script src="../lib/OrbitControls.js"></script>
 
-		<script src="Provamodel.js"></script>
+		<script src="Model.js"></script>
 		<script src="AbstractAnimation.js"></script>
 		<script src="RotationAnimation.js"></script>
 		<script src="TranslationAnimation.js"></script>
@@ -33,22 +33,13 @@
 		
 		var scene, camera, renderer, controls, stats;
 		
-        var nuv = 10;        //numero di nuvole
-            
-        var lim = 50;        // imposta da dove far partire e fin dove far arrivare la nuvola    
-        
-        var vel = lim*1000;         // imposta la velocità di scorrimento della nuvola, aumentare il moltiplicatore per diminuire la velocità
-         
-        var cloud;
-            
-            
 		function Start() {
 			scene = new THREE.Scene();
 			camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
 			renderer = new THREE.WebGLRenderer({ antialias: true });
 			renderer.setSize(window.innerWidth, window.innerHeight);
-			renderer.setClearColor(0xf0f0f0);
+			renderer.setClearColor(0xfff2f7);
 			renderer.setPixelRatio(window.devicePixelRatio);
 			renderer.gammaInput = true;
 			renderer.gammaOutput = true;
@@ -76,9 +67,9 @@
 			scene.add(hemiLight);
 
 			dirLight = new THREE.DirectionalLight(0xffffff, 1);
-			dirLight.color.setHSL(0.1, 1, 0.95);
-			dirLight.position.set(-.6, .7, 1);
-			dirLight.position.multiplyScalar(75);
+			dirLight.color.setHSL(.11, 1, 0.6);
+			dirLight.position.set(-.2, .6, 1);
+			dirLight.position.multiplyScalar(50);
 			scene.add(dirLight);
 			dirLight.castShadow = true;
 			dirLight.shadow.mapSize.width = 1024;
@@ -95,8 +86,8 @@
 			target.updateMatrixWorld();
 			dirLight.target = target;
 
-			// var helper = new THREE.CameraHelper(dirLight.shadow.camera);
-			// scene.add(helper);
+			//var helper = new THREE.CameraHelper(dirLight.shadow.camera);
+			//scene.add(helper);
 
 
 			// GROUND
@@ -106,9 +97,6 @@
 			groundMat.color.setHSL(0.095, 1, 0.75);
 			var ground = new THREE.Mesh(groundGeo, groundMat);
 			ground.position.y = -0.5;
-
-		
-
 			ground.rotation.x = -Math.PI/2;
 			scene.add(ground);
 			
@@ -129,6 +117,7 @@
 
 			requestAnimationFrame(Update);
 
+			// lanterns
 			function invert(init_angle) {	// this accounts for the case in which the animation2
 												// hasn't reached PI/4 (current angle) before
 												// inversion
@@ -154,41 +143,49 @@
 			lantern.matrix.premultiply(matrix);
 			lantern.matrixAutoUpdate = false;
 
+			// clouds
+			for(var j=0; j<nuv; j++) {                    					// un ciclo per ogni nuvola
+            	if (clouds[j].position.z > -lim) {
+                    clouds[j].position.z = clouds[j].position.z - step; 	// sposta la nuvola
+            	} else {
+                    clouds[j].position.z = lim;
+                }
+            }
+
 			controls.update();
 			//camera.lookAt(new THREE.Vector3(0, 0, 0));
 			stats.update();
 			Render();
 		}
+
+		function Render() {
+			renderer.render(scene, camera);
+		}
 		
 		
 		Start();
 
-
-        
-        
-        // ----------------------------------------------------------- cloud
+	    // { --------------------------------------------------------- clouds
+	    var nuv = 10;       // numero di nuvole
+        var lim = 50;       // imposta da dove far partire e fin dove far arrivare la nuvola    
+        var step = .1;		// imposta la velocità di scorrimento della nuvola, aumentare il moltiplicatore per diminuire la velocità
        
-        var geometry = new THREE.BoxGeometry(5,0.5,5);    
-        var material = new THREE.MeshBasicMaterial( { color: 0x66ffff } );
-        cloud = new Array();
+        var geometry = new THREE.BoxGeometry(5, 0.5, 5);    
+        var material = new THREE.MeshBasicMaterial({ color: 0xd0d0ff });
+        clouds = new Array();
             
-        for (var k=0; k<nuv;k++){
+        for (var k=0; k < nuv; k++) {
             
-    
-            cloud[k] = new THREE.Mesh( geometry, material );
-            cloud[k].position.y = 22;
-            cloud[k].position.x = -lim+(Math.random()*lim*2);
-            cloud[k].position.z = -lim+(Math.random()*lim*2);	   
-            scene.add(cloud[k]);
-                     
+            clouds[k] = new THREE.Mesh(geometry, material);
+            clouds[k].position.y = 30;
+            clouds[k].position.x = -lim+(Math.random()*lim*2);
+            clouds[k].position.z = -lim+(Math.random()*lim*2);
+            scene.add(clouds[k]);
         }
-            
-        
-      
+        // } --------------------------------------------------------- clouds
         
         var temple = drawTemple();
-		    scene.add(temple);   
-        scene.add(drawTemple());
+		scene.add(temple);
 
 		var arch = drawArch();
 		arch.position.x = 20;
@@ -281,22 +278,8 @@
 
 		// } --------------------------------------------------------- wind test
         
-
-          
         Update();
-            
-        function Render() {
-            for(var j=0; j<nuv; j++) {                    //un ciclo per ogni nuvola
-                for (var k=0; k<2*lim; k++) {             //sposta la nuvola
-                    if (cloud[j].position.z > -lim)
-                        cloud[j].position.z = ((cloud[j].position.z - k/vel));
-                    else
-                        cloud[j].position.z = lim;
-                }
-            }
 
-			renderer.render(scene, camera);
-		}
 		
 		</script>
 	</body>
