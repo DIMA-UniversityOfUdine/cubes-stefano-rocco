@@ -12,18 +12,20 @@ class RotationAnimation extends AbstractAnimation {
 		super(object, controller);
 		this.axis = axis;
 		this.angle = 0;
+		this.phase = 0;
 	}
 
-	begin() {
+	begin(time) {
 
 		this.angle = 0;
-		super.begin();
+		this.phase = 0;
+		super.begin(time);
 	}
 
 	_computeMatrix(time_from_init, time_delta) {
 
 		this.angle = this.controller(this.angle, time_from_init, time_delta);
-		var matrix = (new THREE.Matrix4()).makeRotationAxis(this.axis, this.angle);
+		var matrix = (new THREE.Matrix4()).makeRotationAxis(this.axis, this.angle+this.phase);
 		return matrix;
 	}
 
@@ -44,9 +46,6 @@ class RotationAnimation extends AbstractAnimation {
 	setAngle(angle) {
 
 		if (this.active) {
-			this.object.matrix = (new THREE.Matrix4()).makeRotationAxis(this.axis, angle);
-			this.object.matrix.premultiply(this.matrix_chain);
-			this.object.matrix.multiply(this.matrix_init);
 			this.angle = angle;
 		}
 	}
