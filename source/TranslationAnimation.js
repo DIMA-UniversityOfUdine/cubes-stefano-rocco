@@ -7,10 +7,10 @@ class TranslationAnimation extends AbstractAnimation {
 		this.position = 0;
 	}
 
-	begin() {
+	begin(time) {
 
 		this.position = 0;
-		super.begin();
+		super.begin(time);
 	}
 
 	_computeMatrix(time_from_init, time_delta) {

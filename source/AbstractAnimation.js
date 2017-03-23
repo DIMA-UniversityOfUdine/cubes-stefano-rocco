@@ -25,10 +25,10 @@ class AbstractAnimation {
 
 	/** Starts this animation by activating it and resetting time.
 	*/
-	begin() {
+	begin(time = 0) {
 
 		this.active = true;
-		this.time_shift = 0;
+		this.time_shift = time;
 		this.time_init = Date.now();
 		this.time_curr = this.time_init;
 	}
@@ -87,7 +87,9 @@ class AbstractAnimation {
 	}
 
 	/** Inverts this animation. */
-	invert() {
+	invert() {									// note that in theory invert() has the same effect
+													// of setVeclocity(-1) if the controller is
+													// properly written (negative time), NOT tested
 		throw new Error('Abstract method.');
 	}
 

@@ -219,8 +219,9 @@ function drawLantern() {
 
 	var material = new THREE.MeshPhongMaterial({ color: colors[10] });
 	box = new THREE.Mesh(geometry, material);			// cord
-	box.scale.set(.1, 2, .1);
+	box.scale.set(.1, 2.5, .1);
 	box.position.y = -box.scale.y/2;
+	box.castShadow = true;
 	lantern.add(box);
 	ypos = box.position.y - box.scale.y/2;
 
@@ -228,6 +229,7 @@ function drawLantern() {
 	box = new THREE.Mesh(geometry, material);			// base
 	box.scale.set(.5, 3, .5);
 	box.position.y = ypos - box.scale.y/2;;
+	box.castShadow = true;
 	lantern.add(box);
 	ypos = box.position.y;
 
@@ -235,6 +237,7 @@ function drawLantern() {
 	box = new THREE.Mesh(geometry, material);			// body	
 	box.scale.set(1.3, 2.5, 1.3);
 	box.position.y = ypos;
+	box.castShadow = true;
 	lantern.add(box);
 
 	box = box.clone();
@@ -260,6 +263,7 @@ function drawArch() {
 	
 	column.scale.set(.5, ypos, .5);
 	column.position.set(3.5, ypos/2, 0);
+	column.castShadow = true;
 	arch.add(column);
 
 	column = column.clone();
@@ -272,6 +276,7 @@ function drawArch() {
 	material = new THREE.MeshPhongMaterial({ color: colors[6] });
 	box = new THREE.Mesh(geometry, material);				// middle arch
 	box.scale.set(10, 1.5, 1);
+	box.castShadow = true;
 	middle_arch.add(box);
 	{														// middle arch details
 		box1 = box.clone();
@@ -283,7 +288,7 @@ function drawArch() {
 		box1 = box1.clone();
 		box1.position.x = -box1.position.x;
 		middle_arch.add(box1);
-
+		/*
 		for (var i = 0; i < 3; i++) {						// lanterns
 			var lantern = drawLantern();
 			var xlantern = Math.pow(-1, i)*Math.floor((i+1)/2)*2;
@@ -291,6 +296,7 @@ function drawArch() {
 			lantern.position.set(xlantern, -box.scale.y/2, 0);
 			middle_arch.add(lantern);
 		}
+		*/
 	}
 	arch.add(middle_arch);
 
@@ -305,6 +311,7 @@ function drawArch() {
 		box1 = new THREE.Mesh(geometry, material);
 		box1.scale.set(.5, top_arch.position.y-middle_arch.position.y, .5);
 		box1.position.y = top_arch.position.y - box1.scale.y/2;
+		box1.castShadow = true;
 		arch.add(box1);
 	}
 
@@ -312,6 +319,7 @@ function drawArch() {
 	roof = new THREE.Mesh(geometry, material);				// roof
 	roof.scale.set(13, .5, 2);
 	roof.position.y = ypos + roof.scale.y/2;
+	roof.castShadow = true;
 	arch.add(roof);
 
 	return arch;

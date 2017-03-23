@@ -24,7 +24,6 @@
 		<script src="Model.js"></script>
 		<script src="AbstractAnimation.js"></script>
 		<script src="RotationAnimation.js"></script>
-		<script src="TranslationAnimation.js"></script>
 		<script src="HeightMap.js"></script>
 	</head>
 	<body>
@@ -89,14 +88,13 @@
 			//var helper = new THREE.CameraHelper(dirLight.shadow.camera);
 			//scene.add(helper);
 
-
 			// GROUND
 
 			var groundGeo = new THREE.PlaneBufferGeometry(10000, 10000);
 			var groundMat = new THREE.MeshPhongMaterial({ color: 0xffffff, specular: 0x050505 });
 			groundMat.color.setHSL(0.095, 1, 0.75);
 			var ground = new THREE.Mesh(groundGeo, groundMat);
-			ground.position.y = -0.5;
+			ground.position.y = -20;
 			ground.rotation.x = -Math.PI/2;
 			scene.add(ground);
 			
@@ -118,35 +116,41 @@
 			requestAnimationFrame(Update);
 
 			// lanterns
-			function invert(init_angle) {	// this accounts for the case in which the animation2
-												// hasn't reached PI/4 (current angle) before
-												// inversion
-				var angle = animation2.getAngle();
-				animation2.setInitAngle(init_angle);
-				animation2.invert();
-				animation2.begin();
-				animation2.setAngle(angle_max-angle);
+			function invert(anim_2, init_angle) {	// this accounts for the case in which the animation2
+														// hasn't reached angle_max_2 (current angle)
+														// before inversion
+				var angle = anim_2.getAngle();
+				anim_2.setInitAngle(init_angle);
+				anim_2.invert();
+				anim_2.begin();
+				anim_2.setAngle(angle_max_2-angle);
 			}
 			if (!wind) {
-				if (Math.random() > .995) {
+				if (Math.random() > .996) {			// 1 - prob
 					time = Date.now();
-					animation.setVelocity(3);
-					invert(0);
+					for (var i = 0; i < lanterns.length; i++) {
+						lantern_anims[i].setVelocity(2+Math.random());
+						invert(lantern_anims_2[i], 0);
+					}
 					wind = true;
 				}
 			} else if (Date.now()-time > 2000) {
-				animation.setVelocity(1);
-				invert(angle_max);
+				for (var i = 0; i < lanterns.length; i++) {
+					lantern_anims[i].setVelocity(1);
+					invert(lantern_anims_2[i], angle_max_2);
+				}
 				wind = false;
+			}			
+			for (var i = 0; i < lanterns.length; i++) {
+				lantern_anims[i].perform();
+				lanterns[i].matrix.premultiply(matrices[i]);
+				lanterns[i].matrixAutoUpdate = false;
 			}
-			animation.perform();
-			lantern.matrix.premultiply(matrix);
-			lantern.matrixAutoUpdate = false;
 
 			// clouds
-			for(var j=0; j<nuv; j++) {                    					// un ciclo per ogni nuvola
+			for(var j = 0; j < nuv; j++) {                    			// un ciclo per ogni nuvola
             	if (clouds[j].position.z > -lim) {
-                    clouds[j].position.z = clouds[j].position.z - step; 	// sposta la nuvola
+                    clouds[j].position.z = clouds[j].position.z - step; // sposta la nuvola
             	} else {
                     clouds[j].position.z = lim;
                 }
@@ -164,11 +168,59 @@
 		
 		
 		Start();
+        
+        var temple = drawTemple();
+		scene.add(temple);
 
-	    // { --------------------------------------------------------- clouds
+		var arch = drawArch();
+		arch.position.set(23.4, 1, 30);
+		arch.scale.multiplyScalar(.5);
+		scene.add(arch);
+
+		// { --------------------------------------------------------- lanterns
+		var lanterns = [];
+		var matrices = [];
+		var lantern_anims = [];
+		var lantern_anims_2 = [];
+		var angle_max = Math.PI/16;
+		var angle_max_2 = Math.PI/4;
+
+		for (i = 0; i < 3; i++) {
+
+			lanterns[i] = drawLantern();
+			var xpos = Math.floor((i+1)/2)*Math.pow(-1, i) * 2;
+			matrices[i] = (new THREE.Matrix4()).makeTranslation(xpos, 11.2, 0);
+			matrices[i].multiply((new THREE.Matrix4()).makeScale(.5, .5, .5));
+			arch.add(lanterns[i]);
+
+			lantern_anims[i] = new RotationAnimation(lanterns[i], function(angle, time, delta) {
+				return Math.sin(time/1000*2)*angle_max;
+			}, new THREE.Vector3(1, 0, 0));
+			lantern_anims[i].begin(i*10000);				// 'random' initial phase
+
+			lantern_anims_2[i] = new RotationAnimation(lanterns[i], function(angle, time, delta) {
+				angle += delta/1500;
+				if (angle < angle_max_2) { return angle; }
+				else { return angle_max_2; }
+			}, new THREE.Vector3(1, 0, 0));
+			lantern_anims[i].chain(lantern_anims_2[i]);
+			lantern_anims_2[i].invert();
+			lantern_anims_2[i].begin();						// necessary for setting angle
+			lantern_anims_2[i].setAngle(angle_max_2);			// set (current) angle because of first inversion
+																// in Update()...
+			lantern_anims_2[i].setInitAngle(-angle_max_2);	// ...and the initial angle too
+			lantern_anims_2[i].end();						// necessary to contrast the begin() call
+		}
+
+		var wind = false;
+		var time = Date.now();
+
+		// } --------------------------------------------------------- lanterns
+
+		// { --------------------------------------------------------- clouds
 	    var nuv = 10;       // numero di nuvole
         var lim = 50;       // imposta da dove far partire e fin dove far arrivare la nuvola    
-        var step = .1;		// imposta la velocità di scorrimento della nuvola, aumentare il moltiplicatore per diminuire la velocità
+        var step = .1;		// imposta la velocità di scorrimento della nuvola
        
         var geometry = new THREE.BoxGeometry(5, 0.5, 5);    
         var material = new THREE.MeshBasicMaterial({ color: 0xd392b3 });
@@ -183,16 +235,8 @@
             scene.add(clouds[k]);
         }
         // } --------------------------------------------------------- clouds
-        
-        var temple = drawTemple();
-		scene.add(temple);
 
-		var arch = drawArch();
-		arch.position.x = 20;
-		arch.scale.multiplyScalar(.5);
-		scene.add(arch);
-
-		// { --------------------------------------------------------- terrain test
+        // { --------------------------------------------------------- terrain
 		function applyRecursive(obj, prop, val) {
 			for (var i = 0; i < obj.children.length; i++) {
 				applyRecursive(obj.children[i], prop, val);
@@ -238,45 +282,7 @@
 			applyRecursive(stairs, 'receiveShadow', true);
 			scene.add(stairs);
 		};
-
-		arch.position.set(23.4, 1, 30);
-		applyRecursive(arch, 'castShadow', true);
-		// } --------------------------------------------------------- terrain test
-
-
-		// { --------------------------------------------------------- wind test
-		var lantern = drawLantern();
-		var matrix = (new THREE.Matrix4()).makeTranslation(0, 5, 20);
-		matrix.multiply((new THREE.Matrix4()).makeScale(.5, .5, .5));
-		lantern.matrix.copy(matrix);
-		scene.add(lantern);
-
-		var animation = new RotationAnimation(lantern, function(angle, time, delta) {
-			return Math.sin(time/1000*1.5)*Math.PI/16;
-		}, new THREE.Vector3(1, 0, 0));
-		animation.begin();
-
-		var angle_max = Math.PI/4;
-		var animation2 = new RotationAnimation(lantern, function(angle, time, delta) {
-			angle += delta/(1000*1.5);
-			if (angle < angle_max) { return angle; }
-			else { return angle_max; }
-		}, new THREE.Vector3(1, 0, 0));
-		animation.chain(animation2);
-		animation2.invert();					// note that in theory invert() has the same effect
-													// of setVeclocity(-1) if the controller is
-													// properly written (negative time), NOT tested
-		animation2.begin();						// necessary for setting angle (which is
-													// reasonable), see specification
-		animation2.setAngle(angle_max);			// set (current) angle because of first inversion
-													// in Update()...
-		animation2.setInitAngle(-angle_max);	// ...and the initial angle too
-		animation2.end();						// necessary to contrast the begin() call
-
-		var wind = false;
-		var time = Date.now();
-
-		// } --------------------------------------------------------- wind test
+		// } --------------------------------------------------------- terrain
         
         Update();
 
