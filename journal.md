@@ -28,7 +28,7 @@ Also I haven't followed the initial idea to model using a virtual grid (much lik
 
 - The basic temple is complete, I'm going to model the arch and lanterns, the stairs will be part of the terrain.
 
-![temple basic model](/resources/temple_basic.png)
+![temple basic model](/resources/temple_basic_model.png)
 
 I've been polishing the code and managed to shrink it to about a half by exploiting symmetries of the model, whilst trying to make it more readable, but I'm still not satisfied. In particular y-positioning depends on the underlying layers, but is not well handled and I don't think I could do better honestly.
 
@@ -66,3 +66,7 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 - I and Luca finished the code for the heightMap() function that builds the terrain; I kept working on the aesthetics of the terrain whilst Luca began working on the clouds and their animation.
 - I've been going through an issue–once again only made worse by absence of specification–which caused two meshes of the same material to not behave consistently when casting shadows.
+
+## 03.23
+
+- We overall adjusted code and finished animations. Planning a few details to add to the scene, like fog and mountains.

@@ -67,7 +67,7 @@
 
 			dirLight = new THREE.DirectionalLight(0xffffff, 1);
 			dirLight.color.setHSL(.11, 1, 0.6);
-			dirLight.position.set(-.2, .6, 1);
+			dirLight.position.set(-.35, .6, 1.2);
 			dirLight.position.multiplyScalar(50);
 			scene.add(dirLight);
 			dirLight.castShadow = true;
@@ -75,13 +75,13 @@
 			dirLight.shadow.mapSize.height = 1024;
 
 			dirLight.shadow.camera.near = 3;
-			dirLight.shadow.camera.left = -20;			
-			dirLight.shadow.camera.right = 20;
-			dirLight.shadow.camera.bottom = -20;
-			dirLight.shadow.camera.top = 30;
+			dirLight.shadow.camera.left = -30;			
+			dirLight.shadow.camera.right = 30;
+			dirLight.shadow.camera.bottom = -10;
+			dirLight.shadow.camera.top = 40;
 
 			var target = new THREE.Object3D();
-			target.position.set(30, 0, 0);
+			target.position.set(15, 0, 15);
 			target.updateMatrixWorld();
 			dirLight.target = target;
 
@@ -91,10 +91,10 @@
 			// GROUND
 
 			var groundGeo = new THREE.PlaneBufferGeometry(10000, 10000);
-			var groundMat = new THREE.MeshPhongMaterial({ color: 0xffffff, specular: 0x050505 });
+			var groundMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
 			groundMat.color.setHSL(0.095, 1, 0.75);
 			var ground = new THREE.Mesh(groundGeo, groundMat);
-			ground.position.y = -20;
+			ground.position.y = -10;
 			ground.rotation.x = -Math.PI/2;
 			scene.add(ground);
 			
@@ -108,8 +108,8 @@
 			
 			controls = new THREE.OrbitControls(camera);
 			controls.addEventListener('change', Render);
-						
 		}
+
 
 		function Update() {
 
@@ -134,7 +134,7 @@
 					}
 					wind = true;
 				}
-			} else if (Date.now()-time > 2000) {
+			} else if (Date.now()-time > 2000) {	// wait 2 secs
 				for (var i = 0; i < lanterns.length; i++) {
 					lantern_anims[i].setVelocity(1);
 					invert(lantern_anims_2[i], angle_max_2);
@@ -168,13 +168,14 @@
 		
 		
 		Start();
-        
+
+        // main models
         var temple = drawTemple();
 		scene.add(temple);
 
 		var arch = drawArch();
-		arch.position.set(23.4, 1, 30);
 		arch.scale.multiplyScalar(.5);
+		arch.position.set(23.4, 1, 29.6);
 		scene.add(arch);
 
 		// { --------------------------------------------------------- lanterns
@@ -213,7 +214,6 @@
 		}
 
 		var wind = false;
-		var time = Date.now();
 
 		// } --------------------------------------------------------- lanterns
 
@@ -244,39 +244,47 @@
 			obj[prop] = val;
 		}
 
-		var material1 = new THREE.MeshPhongMaterial({ color: 0x201010 });	// terrain 1
-		var material2 = new THREE.MeshPhongMaterial({ color: 0x201010 });	// terrain 2
-		var material3 = new THREE.MeshPhongMaterial({ color: 0xa0a0a0 });	// stairs
+		var terrain_color = 0x201010;
+		var stairs_color = 0xa0a0a0
 
-		var img1 = new Image();
+		var img1 = new Image();			// terrain 1
 		img1.src = "../textures/terrain1.png";
 		img1.onload = function () {
-			var data = getHeightData(img1, 0.1);
-			var terrain = heightMap(data, material1);
+			var data = getHeightData(img1, .1);
+			var material = new THREE.MeshPhongMaterial({ color: terrain_color });
+			var terrain = heightMap(data, material);
 			terrain.scale.set(2, 1, 2);
 			applyRecursive(terrain, 'receiveShadow', true);
 			scene.add(terrain);
+
+			var xzscale = data.width * terrain.scale.x;
+			var geometry = new THREE.BoxGeometry(xzscale, 5, xzscale);
+
+			material = new THREE.MeshPhongMaterial({ color: terrain_color });
+			var terrain_base = new THREE.Mesh(geometry, material);
+			var ypos = -geometry.parameters.height/2;
+			terrain_base.position.set(xzscale/2, ypos, xzscale/2);
+			scene.add(terrain_base);
 		};
 
-		var img2 = new Image();
+		var img2 = new Image();			// terrain 2
 		img2.src = "../textures/terrain2.png";
 		img2.onload = function () {
-			var data = getHeightData(img2, 0.1);
-			var terrain = heightMap(data, material2);
-			var ypos = data.width*terrain.scale.x + 10;
+			var material = new THREE.MeshPhongMaterial({ color: terrain_color });
+			var terrain = heightMap(getHeightData(img2, .1), material);
 			terrain.rotation.z = -Math.PI/2;
-			terrain.position.set(0, ypos, 0);
+			terrain.position.y = 18;
 			applyRecursive(terrain, 'castShadow', true);
 			scene.add(terrain);
 
-			temple.position.set(17, ypos-1.5, 6);
+			temple.position.set(17, terrain.position.y-1.5, 6);
 		};
 
-		var img3 = new Image();
+		var img3 = new Image();			// stairs
 		img3.src = "../textures/stairs.png";
 		img3.onload = function () {
-			var data = getHeightData(img3, 0.1);
-			var stairs = heightMap(data, material3);
+			var material = new THREE.MeshPhongMaterial({ color: stairs_color });
+			var stairs = heightMap(getHeightData(img3, .1), material);
 			stairs.scale.z = .5;
 			stairs.position.set(-.1, -.1, -.1);
 			applyRecursive(stairs, 'receiveShadow', true);
@@ -284,6 +292,8 @@
 		};
 		// } --------------------------------------------------------- terrain
         
+
+		var time = Date.now();
         Update();
 
 		
