@@ -39,7 +39,7 @@
 
 			renderer = new THREE.WebGLRenderer({ antialias: true });
 			renderer.setSize(window.innerWidth, window.innerHeight);
-			renderer.setClearColor(0xfff2f7);
+			renderer.setClearColor(0xffddea);
 			renderer.setPixelRatio(window.devicePixelRatio);
 			renderer.gammaInput = true;
 			renderer.gammaOutput = true;
@@ -171,7 +171,7 @@
         var step = .1;		// imposta la velocità di scorrimento della nuvola, aumentare il moltiplicatore per diminuire la velocità
        
         var geometry = new THREE.BoxGeometry(5, 0.5, 5);    
-        var material = new THREE.MeshBasicMaterial({ color: 0xd0d0ff });
+        var material = new THREE.MeshBasicMaterial({ color: 0xd392b3 });
         clouds = new Array();
             
         for (var k=0; k < nuv; k++) {

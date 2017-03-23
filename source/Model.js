@@ -253,7 +253,7 @@ function drawArch() {
 	var box;
 
 	var arch = new THREE.Group();
-	var ypos = 12;
+	var ypos = 14;
 
 	var material = new THREE.MeshPhongMaterial({ color: colors[5] });
 	column = new THREE.Mesh(geometry, material);			// columns
