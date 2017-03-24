@@ -39,12 +39,24 @@
 			camera.position.set(3,4,6);
 			camera.lookAt( new THREE.Vector3(0,0,0));
 			
-			var geometry = new THREE.BoxGeometry(1,1,1);
+			/*var geometry = new THREE.BoxGeometry(1,1,1);
 			var material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa } );
 			var cube = new THREE.Mesh( geometry, material );
 			
-			scene.add( cube );
+			scene.add( cube );*/
 			
+            
+            
+            for (var i = 0; i < 30; i++) {
+                 var geometry = new THREE.BoxGeometry(1, 1, 1);
+			     var material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa } );
+			     var cube = new THREE.Mesh( geometry, material );
+			     cube.position.set(100 * Math.random() - 50, 1, 100 * Math.random() - 50);
+			     scene.add( cube );	           
+	       }
+            
+            
+            
 			stats = new Stats();
 			stats.domElement.style.position = 'absolute';
 			stats.domElement.style.top = '0px';
