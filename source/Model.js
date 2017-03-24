@@ -300,3 +300,35 @@ function drawArch() {
 
 	return arch;
 }
+
+// --------------------------------------------------------- lights
+
+function drawLights() {
+    var lan = new THREE.Group();
+    var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    var material = new THREE.MeshBasicMaterial( { color: 0x0000ff, opacity: 0.7, transparent: true } );
+    light = new THREE.Mesh( geometry, material );
+    light.position.y = 20;
+    light.receiveShadow = true;
+    lan.add(light);
+    
+    var bulbLight;
+    var bulbMat;
+    var bulbGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    bulbLight = new THREE.PointLight(0x0000ff, 2, 4, 3);
+    bulbMat = new THREE.MeshStandardMaterial( {emissive: 0xffffee, emissiveIntensity: 100, color: 0x0000ff});
+    bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat) );
+    bulbLight.castShadow = true;
+    bulbLight.position.y = 20;
+    lan.add(bulbLight);
+    
+    var geometry = new THREE.BoxGeometry(0.03, 0.5, 0.03);
+    var material = new THREE.MeshBasicMaterial( {color: 0x000000});
+    bas = new THREE.Mesh(geometry, material);
+    bas.position.y = 20.5;
+    lan.add(bas);
+    
+    return lan;
+    
+            
+}
