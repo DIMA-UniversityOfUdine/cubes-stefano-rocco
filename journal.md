@@ -53,20 +53,26 @@ _-_
 
 ## 03.21
 
-- I've been working on the animations; I've coded a little class based on the following sketchy class diagram, which should be of help in building simple animations consisting of rotations and translations (that's what we need).
+- **S:** I've been working on the animations; I've coded a little class based on the following sketchy class diagram, which should be of help in building simple animations consisting of rotations and translations (that's what we need).
 
 ![animation class diagram](/resources/animation_class_diagram.png)
 
 In particular, it shall allow the semantics of the animation to be defined by the caller. In theory this should account for 1) generality and 2) much less code in the render loop.
 
-- Split `source/drawScene` and moved the model code to its own `source/Model.js` file.
-- I spent the rest of the day debugging the animation classes, which have yet to be properly tested. In particular an improper matrix initialization was one of the most insidious source of defects, much like the strange behavior of the `Object3D.clone()` function.
+- **S:** Split `source/drawScene` and moved the model code to its own `source/Model.js` file.
+- **S:** I spent the rest of the day debugging the animation classes, which have yet to be properly tested. In particular an improper matrix initialization was one of the most insidious source of defects, much like the strange behavior of the `Object3D.clone()` function.
 
 ## 03.22
 
-- I and Luca finished the code for the heightMap() function that builds the terrain; I kept working on the aesthetics of the terrain whilst Luca began working on the clouds and their animation.
-- I've been going through an issue–once again only made worse by absence of specification–which caused two meshes of the same material to not behave consistently when casting shadows.
+- I and Luca finished the code for the heightMap() function that builds the terrain; **S:** I kept working on the aesthetics of the terrain whilst Luca began working on the clouds and their animation.
+- **S:** I've been going through an issue–once again only made worse by absence of specification–which caused two meshes of the same material to not behave consistently when casting shadows.
 
 ## 03.23
 
 - We overall adjusted code and finished animations. Planning a few details to add to the scene, like fog and mountains.
+
+## 03.24
+
+- We decided to use an orthographic camera, as it matches best the style of the scene. **S:** Added mountains. The results so far:
+
+![partial result](/resources/partial_result.png)
