@@ -159,6 +159,20 @@
                     clouds[j].position.z = lim;
                 }
             }
+			
+			for (var t=numfon-1; t>=0; t--) {                          // water animation  
+                s[t] = s[t]+0.01;
+                if(water[t].position.y>0) {
+                    water[t].position.x = (water[t].position.x) + 0.12; 
+                    water[t].position.y = (water[t].position.y)-(s[t]);
+                    water[t].position.z = water[t].position.z - 0.02; 		 //simulate the shift of the air
+                } else {
+                    water[t].position.y = 18.65;
+                    water[t].position.x = 24.3;
+                    water[t].position.z = 6;
+                    s[t]=0;
+                }
+            }
 
 			controls.update();
 			stats.update();
@@ -251,6 +265,31 @@
         
        
         // } --------------------------------------------------------- lights   
+			
+	// { --------------------------------------------------------- fountain
+        var numfon = 8;
+        var fountain = drawFountain();
+        scene.add(fountain);
+            
+        var geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        var material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+
+        water = new Array();
+        for (var t=0; t<numfon; t++) {    
+            water[t] = new THREE.Mesh(geometry, material);
+            water[t].position.x = 24.3 +(t/3.5);
+            water[t].position.y = 18.65 - ((t*t/4)*0.2);
+            water[t].position.z = 6;
+            scene.add(water[t]);
+        }
+            
+        s = new Array();
+        for (var j=numfon-1; j>=0; j--) {
+            s[j] = ((numfon/20)*((j*j/4)*0.3));
+        }
+            
+        // } --------------------------------------------------------- fountain
+
 
         // { --------------------------------------------------------- terrain
 		function applyRecursive(obj, prop, val) {
