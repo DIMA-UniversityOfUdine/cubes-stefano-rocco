@@ -118,6 +118,9 @@
 		function Update() {	// some variables are defined below before the call to Update()
 
 			requestAnimationFrame(Update);
+			var time_new = Date.now();
+			var time_delta = time_new - time;
+			time = time_new;
 
 			// lanterns
 			function invert(anim_2, init_angle) {	// this accounts for the case in which the animation2
@@ -131,14 +134,14 @@
 			}
 			if (!wind) {
 				if (Math.random() > .996) {			// 1 - prob
-					time = Date.now();
+					wind_time = Date.now();
 					for (var i = 0; i < lanterns.length; i++) {
 						lantern_anims[i].setVelocity(2+Math.random());
 						invert(lantern_anims_2[i], 0);
 					}
 					wind = true;
 				}
-			} else if (Date.now()-time > 2000) {	// wait 2 secs
+			} else if (Date.now()-wind_time > 2000) {	// wait 2 secs
 				for (var i = 0; i < lanterns.length; i++) {
 					lantern_anims[i].setVelocity(1);
 					invert(lantern_anims_2[i], angle_max_2);
@@ -152,28 +155,25 @@
 			}
 
 			// clouds
-			for(var j = 0; j < nuv; j++) {                    			// un ciclo per ogni nuvola
+			for(var j = 0; j < nuv; j++) {
             	if (clouds[j].position.z > -lim) {
-                    clouds[j].position.z = clouds[j].position.z - step; // sposta la nuvola
+                    clouds[j].position.z = clouds[j].position.z - step; // move cloud
             	} else {
                     clouds[j].position.z = lim;
                 }
             }
-			
-			for (var t=numfon-1; t>=0; t--) {                          // water animation  
-                s[t] = s[t]+0.01;
-                if(water[t].position.y>0) {
-                    water[t].position.x = (water[t].position.x) + 0.12; 
-                    water[t].position.y = (water[t].position.y)-(s[t]);
-                    water[t].position.z = water[t].position.z - 0.02; 		 //simulate the shift of the air
-                } else {
-                    water[t].position.y = 18.65;
-                    water[t].position.x = 24.3;
-                    water[t].position.z = 6;
-                    s[t]=0;
+            
+            // water
+			for (var i = 0; i < water_num; i++) {
+				t[i] += time_delta/1000;
+				if (t[i] > water_t_max) {
+                	t[i] = t[i] - Math.floor(t[i]/water_t_max)*water_t_max;
                 }
+                water[i].position.x = water_x_min + t[i]*water_x_v;
+                water[i].position.y = water_y_max - t[i]*t[i]*water_y_a;
+                water[i].position.z = water_z_max - t[i]*water_z_v[i]; 	// simulate the shift of the air
             }
-
+			
 			controls.update();
 			stats.update();
 			Render();
@@ -253,8 +253,8 @@
         }
         // } --------------------------------------------------------- clouds
             
-         // { --------------------------------------------------------- lights
-        
+        // { --------------------------------------------------------- lights
+        /*
         for (var l=0; l<9; l=l+2) {
             var light = drawLights();
             light.position.x = 13+l;
@@ -262,32 +262,38 @@
             light.position.y = 2.8;
             scene.add(light);
         }
-        
+        */
        
         // } --------------------------------------------------------- lights   
 			
-	// { --------------------------------------------------------- fountain
-        var numfon = 8;
+		// { --------------------------------------------------------- fountain
+		var water_num = 10;				// you can set this to whatever, try 100!
         var fountain = drawFountain();
         scene.add(fountain);
             
-        var geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-        var material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+        var waterGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        var waterMaterial = new THREE.MeshBasicMaterial({ color: 0x3030ff });
+
+        var water_x_min = 24.3;
+        var water_y_min = 5;
+        var water_y_max = 18.65;
+        var water_z_max = 6;
+
+        var water_x_v = 3;				// x velocity
+        var water_z_v = new Array();	// z velocity (has random increase)
+        var water_y_a = 4;				// y acceleration (y velocity is 0)
+
+        var water_t_max = Math.sqrt((water_y_max-water_y_min)/water_y_a);	// max time
 
         water = new Array();
-        for (var t=0; t<numfon; t++) {    
-            water[t] = new THREE.Mesh(geometry, material);
-            water[t].position.x = 24.3 +(t/3.5);
-            water[t].position.y = 18.65 - ((t*t/4)*0.2);
-            water[t].position.z = 6;
-            scene.add(water[t]);
+        t = new Array();
+        for (var i = 0; i < water_num; i++) {
+            water[i] = new THREE.Mesh(waterGeometry, waterMaterial);
+            scene.add(water[i]);
+            t[i] = i*water_t_max/water_num;
+            water_z_v[i] = 3 + Math.random();
         }
-            
-        s = new Array();
-        for (var j=numfon-1; j>=0; j--) {
-            s[j] = ((numfon/20)*((j*j/4)*0.3));
-        }
-            
+
         // } --------------------------------------------------------- fountain
 
 
@@ -370,9 +376,9 @@
 		scene.add(mountain);
 
 
-        
-
-		var time = Date.now();
+        // -----------------------------------------------------------
+        var time = Date.now();
+		var wind_time = time;
         Update();
 
 		
