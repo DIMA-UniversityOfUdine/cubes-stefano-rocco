@@ -356,3 +356,60 @@ function drawLights() {
     
             
 }
+
+// --------------------------------------------------------- fountain
+
+function drawFountain() {
+    var fountain = new THREE.Group();
+    
+    var geometry = new THREE.BoxGeometry(0.4, 0.2, 0.8);
+    var material = new THREE.MeshBasicMaterial( {color: 0x776666} );
+    var front = new THREE.Mesh(geometry, material);
+    front.position.x = 23.7;
+    front.position.y = 19.05;
+    front.position.z = 6;
+    fountain.add(front);
+    
+    var geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
+    var material = new THREE.MeshBasicMaterial( {color: 0x000000} );
+    var lefteye = new THREE.Mesh(geometry, material);
+    lefteye.position.x = 23.9;
+    lefteye.position.y = 19.05;
+    lefteye.position.z = 5.8;
+    fountain.add(lefteye);
+    
+    var geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
+    var material = new THREE.MeshBasicMaterial( {color: 0x000000} );
+    var righteye = new THREE.Mesh(geometry, material);
+    righteye.position.x = 23.9;
+    righteye.position.y = 19.05;
+    righteye.position.z = 6.2;
+    fountain.add(righteye);
+    
+    var geometry = new THREE.BoxGeometry(0.05, 0.1, 0.1);
+    var material = new THREE.MeshBasicMaterial( {color: 0x444444} );
+    var leftear = new THREE.Mesh(geometry, material);
+    leftear.position.x = 23.6;
+    leftear.position.y = 19.2;
+    leftear.position.z = 5.75;
+    fountain.add(leftear);
+    
+    var geometry = new THREE.BoxGeometry(0.05, 0.1, 0.1);
+    var material = new THREE.MeshBasicMaterial( {color: 0x444444} );
+    var rightear = new THREE.Mesh(geometry, material);
+    rightear.position.x = 23.6;
+    rightear.position.y = 19.2;
+    rightear.position.z = 6.25;
+    fountain.add(rightear);
+    
+    var geometry = new THREE.BoxGeometry(0.8, 0.5, 0.8);
+    var material = new THREE.MeshBasicMaterial( {color: 0x707070} );
+    var muzzle = new THREE.Mesh(geometry, material);
+    muzzle.position.x = 23.9;
+    muzzle.position.y = 18.7;
+    muzzle.position.z = 6;
+    fountain.add(muzzle);
+    
+    
+    return fountain;
+}
