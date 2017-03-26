@@ -73,8 +73,10 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 ## 03.24
 
+
 - We overall adjusted code and finished animations. Planning a few details to add to the scene, like fog and mountains.
-- **L:** I've added the lanterns with the lights. The result is
+- We decided to use an orthographic camera, as it matches best the style of the scene. 
+- **L:** I've added the lanterns with the lights. The result is:
 ![final result](/resources/lightsPartial.png)
 
 ## 03.25
@@ -83,7 +85,7 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 ## 03.26
 
-- We decided to use an orthographic camera, as it matches best the style of the scene. **S:** Added mountains.
+- **S:** Added mountains.
 
 ## 03.27
 
