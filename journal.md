@@ -85,7 +85,7 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 - We decided to use an orthographic camera, as it matches best the style of the scene. **S:** Added mountains. The results so far:
 
-![partial result](/resources/lightsPartial.png)
+![partial result](/resources/partial_result.png)
 
 ## 03.27
 
