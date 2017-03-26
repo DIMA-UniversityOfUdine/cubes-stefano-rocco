@@ -1,5 +1,5 @@
 - Our project is about a chinese temple inside a setting with clouds, a fountain and a background.
-It uses the files inside the folder named “source” (AbstractAnimation.js, HeightMap.js, Model.js, RotationAnimation.js and drawScene.html), the images in the folder “textures” (stairs.png, terrain1.png and terrain2.png) and the libraries inside the folder “lib”.
+It uses the files inside the folder named “source” (AbstractAnimation.js, HeightMap.js, Model.js, RotationAnimation.js and drawScene.html), the images in the folder “textures” (stairs.png, terrain1.png and terrain2.png) and the libraries inside the folder “lib”. The main page is "drawScene.html" in the folder "scene".
 
 - The final result is: 
 
