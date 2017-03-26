@@ -38,7 +38,7 @@ I'm going to model the arch without any significant reference.
 
 I think I could use the `Object3D.clone()` function to spawn more instances of the lantern, which is a composite mesh. I've encountered a few issues using that function, specifically when copying a (composite) _transformed_ object, but this shouldn't be our case.
 
-- Provided I'll have enough time I'm going to add some details to the temple. This will most probably break symmetries so I shouldn't add them wihtout modifying the code, as if I don't they won't come along if I had to make some changes in the main model. Yet, I guess I have to come to a compromise and proceed regardless of the object hierarchy.
+- Provided I'll have enough time I'm going to add some details to the temple. This will most probably break symmetries so I shouldn't add them wihtout modifying the code, as if I don't they wouldn't come along if I had to make some changes in the main model. Yet, I guess I have to come to a compromise and proceed regardless of the object hierarchy.
 
 Also I think I've used too few colors so far, I really need to make some changes to the materials.
 
@@ -69,10 +69,22 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 ## 03.23
 
-- We overall adjusted code and finished animations. Planning a few details to add to the scene, like fog and mountains.
+- **L:** I've work on the clouds and their animation to make the scene more realistic.
 
 ## 03.24
+
+- We overall adjusted code and finished animations. Planning a few details to add to the scene, like fog and mountains.
+
+## 03.25
+
+- **L:** I've added the fountain with the water to the scene, then we tried to make the animation more realistic possible. It hasn't been simple to recreate the correct animation. 
+
+## 03.26
 
 - We decided to use an orthographic camera, as it matches best the style of the scene. **S:** Added mountains. The results so far:
 
 ![partial result](/resources/partial_result.png)
+
+## 03.27
+
+- **L:** I've added the fog to the scene and I deleted the class translationAnimation.js because we didn't use it.
