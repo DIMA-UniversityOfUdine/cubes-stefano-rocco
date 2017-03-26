@@ -293,6 +293,23 @@
         }
 
         // } --------------------------------------------------------- fountain
+			
+	// { --------------------------------------------------------- fog
+            
+        var geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);    
+        var material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.2, transparent: true  } );
+        fog = new Array();
+            
+        for (var k=0; k<300;k++){
+            fog[k] = new THREE.Mesh( geometry, material );
+            fog[k].position.y = 8 + (Math.random()*2)/8;
+            fog[k].position.x = 20 + (Math.random()*30);
+            fog[k].position.z = 20 + (Math.random()*30);	
+            scene.add(fog[k]);
+                     
+        }
+            
+        // } --------------------------------------------------------- fog
 
 
         // { --------------------------------------------------------- terrain
