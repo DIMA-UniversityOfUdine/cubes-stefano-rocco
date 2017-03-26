@@ -171,7 +171,7 @@
                 }
                 water[i].position.x = water_x_min + t[i]*water_x_v;
                 water[i].position.y = water_y_max - t[i]*t[i]*water_y_a;
-                water[i].position.z = water_z_max - t[i]*water_z_v[i]; 	// simulate the shift of the air
+                water[i].position.z = water_z_max - t[i]*(t[i]/2)*(water_z_v[i])+(t[i]/2);	// simulate the shift of the air
             }
 			
 			controls.update();
@@ -265,15 +265,15 @@
         // } --------------------------------------------------------- lights   
 			
 		// { --------------------------------------------------------- fountain
-		var water_num = 10;				// you can set this to whatever, try 100!
+		var water_num = 100;				// you can set this to whatever, try 100!
         var fountain = drawFountain();
         scene.add(fountain);
             
         var waterGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-        var waterMaterial = new THREE.MeshBasicMaterial({ color: 0x3030ff });
+        var waterMaterial = new THREE.MeshBasicMaterial({ color: 0x3030ff, opacity: 0.5, transparent: true });
 
         var water_x_min = 24.3;
-        var water_y_min = 5;
+        var water_y_min = 0;
         var water_y_max = 18.65;
         var water_z_max = 6;
 
