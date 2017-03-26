@@ -1,29 +1,29 @@
--Our project is about a chinese temple inside a setting with clouds, a fountain and a background.
+- Our project is about a chinese temple inside a setting with clouds, a fountain and a background.
 It uses the files inside the folder named “source” (AbstractAnimation.js, HeightMap.js, Model.js, RotationAnimation.js and drawScene.html), the images in the folder “textures” (stairs.png, terrain1.png and terrain2.png) and the libraries inside the folder “lib”.
 
--The final result is: 
+- The final result is: 
 
-![final result](/resources/finalScene.png)
+![final result](/resources/FinalScene.png)
 
 ![final result](/resources/finalScene2.png)
 
--As we can see from the images, the cloud, the lanterns in the arch and the water are animated simulating the wind. The others objects are statics.
+- As we can see from the images, the cloud, the lanterns in the arch and the water are animated simulating the wind. The others objects are statics.
 
--First **S** started modeling the temple, the arch and the lanterns to put in it. He used functions to keep the project more clean and clear. 
+- First **S** started modeling the temple, the arch and the lanterns to put in it. He used functions to keep the project more clean and clear. 
 
--**L** joined the team.
+- **L** joined the team.
 
--**S** created classes for the animations.
+- **S** created classes for the animations.
 
--We finished the code of the heightMap() function that builds the terrain and then **S** kept working on the aesthetic of the terrain whilst **L** worked on the clouds and their animation.
+- We finished the code of the heightMap() function that builds the terrain and then **S** kept working on the aesthetic of the terrain whilst **L** worked on the clouds and their animation.
 
--Then we finished animations and planned some details to add: we decided tu use an ortographic camera, **L** added lanterns with the light at the entrance of the temple and added a fountain and we worked on the animation of the water.
+- Then we finished animations and planned some details to add: we decided tu use an ortographic camera, **L** added lanterns with the light at the entrance of the temple and added a fountain and we worked on the animation of the water.
 
--**S** added the mountains to create a background to the scene and finally **L** added the fog to the scene.
+- **S** added the mountains to create a background to the scene and finally **L** added the fog to the scene.
 
--For the project we used SourceTree to create branches and to commit our work. 
+- For the project we used SourceTree to create branches and to commit our work. 
 
--We used Brackets and SublimeText to write the code, gimp to modify the images and the documentation of threejs.org to understand better how some functions work.
+- We used Brackets and SublimeText to write the code, gimp to modify the images and the documentation of threejs.org to understand better how some functions work.
 -----------------------------------------------------------------------------------------------------------------
 
 # Modeling and rendering with cubes
