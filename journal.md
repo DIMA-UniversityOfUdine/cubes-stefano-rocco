@@ -74,6 +74,7 @@ In particular, it shall allow the semantics of the animation to be defined by th
 ## 03.24
 
 - We overall adjusted code and finished animations. Planning a few details to add to the scene, like fog and mountains.
+- **L:** I've added the lanterns with the lights.
 
 ## 03.25
 
@@ -87,4 +88,6 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 ## 03.27
 
-- **L:** I've added the fog to the scene and I deleted the class translationAnimation.js because we didn't use it.
+- **L:** I've added the fog to the scene and I deleted the class translationAnimation.js because we didn't use it. The final result is: 
+
+![final result](/resources/FinalScene.png)
