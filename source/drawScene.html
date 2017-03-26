@@ -367,6 +367,7 @@
 		};
 		// } --------------------------------------------------------- terrain
 
+		// { --------------------------------------------------------- mountains
 		var mountainGeometry = new THREE.BoxGeometry(1, 1, 1);
 		var mountainMaterial = new THREE.MeshPhongMaterial({ color: 0x80d0ff });
 		var mountain = new THREE.Mesh(mountainGeometry, mountainMaterial);
@@ -389,6 +390,8 @@
 		mountain = mountain.clone();
 		mountain.matrix.premultiply((new THREE.Matrix4()).makeTranslation(0, -5, 10));
 		scene.add(mountain);
+			
+		// } --------------------------------------------------------- mountains
 
 
         // -----------------------------------------------------------
