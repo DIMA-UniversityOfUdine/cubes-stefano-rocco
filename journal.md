@@ -83,12 +83,8 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 ## 03.26
 
-- We decided to use an orthographic camera, as it matches best the style of the scene. **S:** Added mountains. The results so far:
-
-![partial result](/resources/partial_result.png)
+- We decided to use an orthographic camera, as it matches best the style of the scene. **S:** Added mountains.
 
 ## 03.27
 
-- **L:** I've added the fog to the scene and I deleted the class translationAnimation.js because we didn't use it. The final result is: 
-
-![final result](/resources/FinalScene.png)
+- **L:** I've added the fog to the scene and I deleted the class translationAnimation.js because we didn't use it.
