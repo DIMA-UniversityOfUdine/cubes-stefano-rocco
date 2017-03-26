@@ -75,7 +75,7 @@ In particular, it shall allow the semantics of the animation to be defined by th
 
 - We overall adjusted code and finished animations. Planning a few details to add to the scene, like fog and mountains.
 - **L:** I've added the lanterns with the lights. The result is
-![final result](/resources/FinalScene.png)
+![final result](/resources/lightsPartial.png)
 
 ## 03.25
 
