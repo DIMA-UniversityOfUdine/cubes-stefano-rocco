@@ -16,15 +16,15 @@
 		}
 	
 	</style>
-		<script src="../lib/three.min.js"></script>
-		<script src="../lib/stats.min.js"></script>
-		<script src="../lib/Coordinates.js"></script>
-		<script src="../lib/OrbitControls.js"></script>
+		<script src="lib/three.min.js"></script>
+		<script src="lib/stats.min.js"></script>
+		<script src="lib/Coordinates.js"></script>
+		<script src="lib/OrbitControls.js"></script>
 
-		<script src="Model.js"></script>
-		<script src="AbstractAnimation.js"></script>
-		<script src="RotationAnimation.js"></script>
-		<script src="HeightMap.js"></script>
+		<script src="source/Model.js"></script>
+		<script src="source/AbstractAnimation.js"></script>
+		<script src="source/RotationAnimation.js"></script>
+		<script src="source/HeightMap.js"></script>
 	</head>
 	<body>
 		
@@ -324,7 +324,7 @@
 		var stairs_color = 0xa0a0a0;
 
 		var img1 = new Image();			// terrain 1
-		img1.src = "../textures/terrain1.png";
+		img1.src = "textures/terrain1.png";
 		img1.onload = function () {
 			var data = getHeightData(img1, .1);
 			var material = new THREE.MeshPhongMaterial({ color: terrain_color });
@@ -344,7 +344,7 @@
 		};
 
 		var img2 = new Image();			// terrain 2
-		img2.src = "../textures/terrain2.png";
+		img2.src = "textures/terrain2.png";
 		img2.onload = function () {
 			var material = new THREE.MeshPhongMaterial({ color: terrain_color });
 			var terrain = heightMap(getHeightData(img2, .1), material);
@@ -356,7 +356,7 @@
 		};
 
 		var img3 = new Image();			// stairs
-		img3.src = "../textures/stairs.png";
+		img3.src = "textures/stairs.png";
 		img3.onload = function () {
 			var material = new THREE.MeshPhongMaterial({ color: stairs_color });
 			var stairs = heightMap(getHeightData(img3, .1), material);
